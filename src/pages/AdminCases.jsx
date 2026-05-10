@@ -142,24 +142,28 @@ export default function AdminCases() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, marginBottom: 40 }}>
           <StatCard
             icon={FileText} iconBg="bg-gradient-to-br from-blue-500 to-blue-600" iconColor="text-white"
+            accentColor="bg-blue-500"
             tag="Денес"
             value={cases.length.toString()}
             label="Вкупно пријави" subLabel="+12% овој месец" subLabelColor="text-green-500"
           />
           <StatCard
             icon={Clock} iconBg="bg-gradient-to-br from-amber-50 to-amber-100" iconColor="text-amber-500"
+            accentColor="bg-amber-400"
             tag="Денес"
             value={cases.filter(c => getStatus(c.status) === 'Нов').length.toString()}
             label="Нови (непрегледани)" subLabel="Потребна акција" subLabelColor="text-amber-500"
           />
           <StatCard
             icon={Clock} iconBg="bg-gradient-to-br from-purple-50 to-purple-100" iconColor="text-purple-500"
+            accentColor="bg-purple-500"
             tag="Денес"
             value={cases.filter(c => getStatus(c.status) === 'Во тек').length.toString()}
             label="Во решавање" subLabel="-5% од вчера" subLabelColor="text-gray-400"
           />
           <StatCard
             icon={CheckCircle2} iconBg="bg-gradient-to-br from-emerald-50 to-emerald-100" iconColor="text-emerald-500"
+            accentColor="bg-emerald-500"
             tag="Денес"
             value={cases.filter(c => getStatus(c.status) === 'Решен').length.toString()}
             label="Решени денес" subLabel="Висока ефикасност" subLabelColor="text-emerald-500"
@@ -529,24 +533,33 @@ export default function AdminCases() {
 }
 
 /* ====== STAT CARD COMPONENT ====== */
-function StatCard({ icon: Icon, iconBg, iconColor, border, tag, value, label, subLabel, subLabelColor }) {
+function StatCard({ icon: Icon, iconBg, iconColor, accentColor, tag, value, label, subLabel, subLabelColor }) {
   return (
-    <div className={`relative flex flex-col items-center justify-center text-center bg-white rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${border ? 'border border-gray-100 shadow-sm' : 'shadow-md border border-transparent'}`} style={{ minHeight: 160 }}>
-      {/* "Денес" Tag positioned absolutely */}
-      <div className="absolute top-4 right-4 bg-gray-50 border border-gray-100 rounded-md px-2 py-0.5">
-        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{tag}</span>
+    <div
+      className="relative bg-white rounded-2xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-md border border-gray-100/80 overflow-hidden group"
+      style={{ height: 220, padding: '24px 28px 24px 36px' }}
+    >
+      {/* Colored accent bar on left */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${accentColor || 'bg-blue-500'} rounded-l-2xl`} />
+
+      {/* Subtle decorative circle */}
+      <div className={`absolute -right-6 -bottom-6 w-28 h-28 rounded-full opacity-[0.04] ${accentColor || 'bg-blue-500'} group-hover:opacity-[0.07] transition-opacity duration-500`} />
+
+      {/* TOP ROW: Icon + Tag */}
+      <div className="flex items-center justify-between">
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBg}`}>
+          <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={2} />
+        </div>
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{tag}</span>
       </div>
 
-      {/* Centered Icon */}
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${iconBg}`}>
-        <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={2.5} />
-      </div>
+      {/* MIDDLE: Big number */}
+      <p className="text-[36px] font-extrabold text-gray-900 leading-none tracking-tight">{value}</p>
 
-      {/* Centered Content */}
-      <div className="w-full">
-        <p className="text-[28px] font-bold text-gray-900 mb-1 leading-none">{value}</p>
-        <p className="text-[13px] font-semibold text-gray-700 mb-1">{label}</p>
-        <p className={`text-[12px] font-medium ${subLabelColor}`}>{subLabel}</p>
+      {/* BOTTOM: Labels */}
+      <div>
+        <p className="text-[14px] font-semibold text-gray-700">{label}</p>
+        <p className={`text-[12px] font-medium mt-1 ${subLabelColor}`}>{subLabel}</p>
       </div>
     </div>
   )

@@ -58,7 +58,7 @@ export default function AdminLayout() {
             justifyContent: collapsed ? 'center' : 'flex-start',
             marginBottom: 24,
           }}>
-            <div 
+            <div
               className="shadow-lg shadow-blue-500/20"
               style={{
                 width: 38,
@@ -75,7 +75,7 @@ export default function AdminLayout() {
             </div>
             {!collapsed && (
               <span style={{ fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>
-                Градски<span className="text-blue-600">Инфо</span>
+                Мој<span className="text-blue-600">Град</span>
               </span>
             )}
           </div>
@@ -155,12 +155,12 @@ export default function AdminLayout() {
               transition: 'background 0.3s ease',
               cursor: 'pointer'
             }}
-            onMouseEnter={(e) => { if(!collapsed) e.currentTarget.style.background = '#f1f5f9' }}
-            onMouseLeave={(e) => { if(!collapsed) e.currentTarget.style.background = '#f8fafc' }}
+              onMouseEnter={(e) => { if (!collapsed) e.currentTarget.style.background = '#f1f5f9' }}
+              onMouseLeave={(e) => { if (!collapsed) e.currentTarget.style.background = '#f8fafc' }}
             >
-              <img 
-                src="https://ui-avatars.com/api/?name=Александар+П&background=e2e8f0&color=475569" 
-                alt="Александар П." 
+              <img
+                src="https://ui-avatars.com/api/?name=Александар+П&background=e2e8f0&color=475569"
+                alt="Александар П."
                 style={{ width: 40, height: 40, borderRadius: '12px', objectFit: 'cover' }}
               />
               {!collapsed && (

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CATEGORIES } from "../context/AppContext";
 
-import ReportNavbar from "../components/ReportNavbar";
+import ReportNavbar from "../components/MainNavbar";
 import ReportCategorySelector from "../components/ReportCategorySelector";
 import ReportDetails from "../components/ReportDetails";
 import ReportUpload from "../components/ReportUpload";
@@ -49,22 +50,15 @@ function ReportForm() {
 
     const newCase = {
       id: `${currentYear}-${nextIdNumber}`,
-
       title:
-        description.length > 55
-          ? description.slice(0, 55) + "..."
-          : description,
-
+          description.length > 55
+              ? description.slice(0, 55) + "..."
+              : description,
       category: selectedCategory,
-
       date: new Date().toISOString().split("T")[0],
-
       municipality: "Центар",
-
       institution: getInstitutionByCategory(selectedCategory),
-
       status: "Пријавено",
-
       imageName: selectedFile ? selectedFile.name : "",
     };
 
@@ -82,51 +76,52 @@ function ReportForm() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <ReportNavbar />
+      <div className="min-h-screen bg-white">
+        <ReportNavbar />
 
-      <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr]">
-        <section className="px-12 py-12 max-w-3xl mx-auto w-full">
-          <h1 className="!text-4xl !font-bold !text-gray-900">
-            Пријави нов проблем
-          </h1>
+        <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr]">
+          <section className="px-12 py-12 max-w-3xl mx-auto w-full">
+            <h1 className="!text-4xl !font-bold !text-gray-900">
+              Пријави нов проблем
+            </h1>
 
-          <p className="!text-gray-600 !mt-4 !text-lg !leading-relaxed">
-            Вашата пријава директно помага за подобра и пофункционална
-            заедница. Ве молиме пополнете ги задолжителните полиња.
-          </p>
+            <p className="!text-gray-600 !mt-4 !text-lg !leading-relaxed">
+              Вашата пријава директно помага за подобра и пофункционална
+              заедница. Ве молиме пополнете ги задолжителните полиња.
+            </p>
 
-          <ReportCategorySelector
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
+            <ReportCategorySelector
+                categories={CATEGORIES}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+            />
 
-          <ReportDetails
-            description={description}
-            setDescription={setDescription}
-          />
+            <ReportDetails
+                description={description}
+                setDescription={setDescription}
+            />
 
-          <ReportUpload
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
-          />
+            <ReportUpload
+                selectedFile={selectedFile}
+                setSelectedFile={setSelectedFile}
+            />
 
-          <div className="!mt-12 !border !rounded-2xl !px-6 !py-5 !font-semibold !text-gray-700">
-            ⓘ Со кликнување на „Испрати пријава“, потврдувате дека наведените
-            податоци се точни и локацијата на мапата е правилно означена.
-          </div>
+            <div className="!mt-12 !border !rounded-2xl !px-6 !py-5 !font-semibold !text-gray-700">
+              ⓘ Со кликнување на „Испрати пријава“, потврдувате дека наведените
+              податоци се точни и локацијата на мапата е правилно означена.
+            </div>
 
-          <button
-            onClick={handleSubmit}
-            className="!mt-8 !w-full !bg-orange-500 !text-white !font-bold !text-xl !py-5 !rounded-2xl shadow-lg hover:!bg-orange-600 !transition"
-          >
-            Испрати пријава
-          </button>
-        </section>
+            <button
+                onClick={handleSubmit}
+                className="!mt-8 !w-full !bg-orange-500 !text-white !font-bold !text-xl !py-5 !rounded-2xl shadow-lg hover:!bg-orange-600 !transition"
+            >
+              Испрати пријава
+            </button>
+          </section>
 
-        <ReportMap />
-      </main>
-    </div>
+          <ReportMap />
+        </main>
+      </div>
   );
 }
 

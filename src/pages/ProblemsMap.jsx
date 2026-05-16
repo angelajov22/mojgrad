@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import MainNavbar from "../components/MainNavbar";
+
+
 import {
   Search,
   Droplets,
@@ -272,6 +275,7 @@ export default function ProblemsMap() {
 
   return (
     <div className="flex flex-col flex-1">
+      {/*<MainNavbar />*/}
       {/* Search */}
 
       <div className="bg-white border-b border-gray-100 px-6 py-3">

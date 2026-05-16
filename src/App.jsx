@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import CaseDetailPage from "./pages/CaseDetailPage";
 import ProblemsMap from "./pages/ProblemsMap";
+import ReportForm from "./pages/ReportForm";
 
 import DashboardLayout from "./components/admin/DashboardLayout";
 import DashboardHomePage from "./pages/admin/DashboardHomePage";
@@ -28,6 +29,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/map" element={<ProblemsMap />} />
             <Route path="/case/:id" element={<CaseDetailPage />} />
+            <Route path="/report" element={<ReportForm />} />
 
             {/* Login */}
             <Route path="/admin/login" element={<LoginPage />} />

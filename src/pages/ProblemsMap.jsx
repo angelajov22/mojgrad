@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 
-
 import {
   Search,
   Droplets,
@@ -20,23 +19,13 @@ import {
   Zap,
 } from "lucide-react";
 
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 
 import L from "leaflet";
 
 import "leaflet/dist/leaflet.css";
 
-import {
-  getReports,
-  categoryMap,
-  statusMap,
-} from "../api/apiService";
+import { getReports, categoryMap, statusMap } from "../api/apiService";
 
 // Fix default marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -105,10 +94,7 @@ function MapControls() {
         onClick={() => {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
-              map.setView(
-                [pos.coords.latitude, pos.coords.longitude],
-                15,
-              );
+              map.setView([pos.coords.latitude, pos.coords.longitude], 15);
             });
           }
         }}
@@ -250,13 +236,9 @@ export default function ProblemsMap() {
 
     const matchesSearch =
       !searchQuery ||
-      (p.description || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      (p.description || "").toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesFilter =
-      activeFilter === "all" ||
-      p.category === activeFilter;
+    const matchesFilter = activeFilter === "all" || p.category === activeFilter;
 
     return matchesSearch && matchesFilter;
   });
@@ -266,10 +248,7 @@ export default function ProblemsMap() {
       return "#22c55e";
     }
 
-    return (
-      categoryMap[report.category]?.color ||
-      "#6b7280"
-    );
+    return categoryMap[report.category]?.color || "#6b7280";
   };
 
   return (
@@ -285,9 +264,7 @@ export default function ProblemsMap() {
               type="text"
               placeholder="Пребарај..."
               value={searchQuery}
-              onChange={(e) =>
-                setSearchQuery(e.target.value)
-              }
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-10 pl-10 pr-4 bg-[#f5f7fb] border border-gray-200 rounded-full text-sm"
             />
           </div>
@@ -296,24 +273,19 @@ export default function ProblemsMap() {
             {filterCategories.map((filter) => {
               const Icon = filter.icon;
 
-              const isActive =
-                activeFilter === filter.id;
+              const isActive = activeFilter === filter.id;
 
               return (
                 <button
                   key={filter.id}
-                  onClick={() =>
-                    setActiveFilter(filter.id)
-                  }
+                  onClick={() => setActiveFilter(filter.id)}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm transition ${
                     isActive
                       ? "bg-[#0a96f4] text-white"
                       : "bg-white border border-gray-200 text-gray-600"
                   }`}
                 >
-                  {Icon && (
-                    <Icon className="w-4 h-4" />
-                  )}
+                  {Icon && <Icon className="w-4 h-4" />}
 
                   {filter.label}
                 </button>
@@ -325,26 +297,23 @@ export default function ProblemsMap() {
 
       {/* MAP */}
 
-      <div className="relative h-[calc(100vh-120px)]">
+      <div className="relative h-[calc(100vh-72px)] w-full">
+        {" "}
         {loading && (
           <div className="absolute inset-0 z-[1001] bg-white/80 flex items-center justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
           </div>
         )}
-
         <MapContainer
           center={mapCenter}
           zoom={14}
           zoomControl={false}
           className="h-full w-full"
         >
-          <FlyToLocation
-            lat={targetLat}
-            lng={targetLng}
-          />
+          <FlyToLocation lat={targetLat} lng={targetLng} />
 
           <TileLayer
-            attribution='&copy; OpenStreetMap'
+            attribution="&copy; OpenStreetMap"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
@@ -353,10 +322,7 @@ export default function ProblemsMap() {
           {filteredProblems.map((report) => (
             <Marker
               key={report.id}
-              position={[
-                report.latitude,
-                report.longitude,
-              ]}
+              position={[report.latitude, report.longitude]}
               icon={createColoredIcon(
                 getMarkerColor(report),
                 report.status === "RESOLVED",
@@ -371,8 +337,7 @@ export default function ProblemsMap() {
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Tag className="w-3 h-3" />
 
-                    {categoryMap[report.category]
-                      ?.label || report.category}
+                    {categoryMap[report.category]?.label || report.category}
                   </div>
 
                   {report.institutionName && (
@@ -385,8 +350,7 @@ export default function ProblemsMap() {
 
                   <div className="mt-3 flex items-center justify-between">
                     <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-[#e8f4fe] text-[#0a96f4]">
-                      {statusMap[report.status]
-                        ?.label || report.status}
+                      {statusMap[report.status]?.label || report.status}
                     </span>
                     <a
                       href={`/case/${report.id}`}
@@ -400,24 +364,17 @@ export default function ProblemsMap() {
             </Marker>
           ))}
         </MapContainer>
-
         {/* Legend */}
-
         <div className="absolute bottom-6 left-6 z-[1000] bg-white rounded-2xl shadow-xl border border-gray-100 p-5 min-w-[200px]">
           <div className="flex items-center gap-2 mb-3">
             <Layers className="w-4 h-4 text-gray-500" />
 
-            <h3 className="text-sm font-bold">
-              Легенда
-            </h3>
+            <h3 className="text-sm font-bold">Легенда</h3>
           </div>
 
           <div className="space-y-2">
             {legendItems.map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2"
-              >
+              <div key={i} className="flex items-center gap-2">
                 <span
                   className="w-3 h-3 rounded-full"
                   style={{
@@ -425,9 +382,7 @@ export default function ProblemsMap() {
                   }}
                 />
 
-                <span className="text-xs text-gray-600">
-                  {item.label}
-                </span>
+                <span className="text-xs text-gray-600">{item.label}</span>
               </div>
             ))}
           </div>

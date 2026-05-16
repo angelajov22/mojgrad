@@ -1,104 +1,133 @@
 import { useState } from "react";
-import { useApp, CATEGORIES } from "../context/AppContext";
-import MainNavbar from "../components/MainNavbar";
-import MainFooter from "../components/MainFooter";
+import { useNavigate } from "react-router-dom";
 
-const ReportForm = () => {
-  const { addCase } = useApp();
-  const [category, setCategory] = useState(CATEGORIES[0]);
-  const [address, setAddress] = useState("");
+import ReportNavbar from "../components/ReportNavbar";
+import ReportCategorySelector from "../components/ReportCategorySelector";
+import ReportDetails from "../components/ReportDetails";
+import ReportUpload from "../components/ReportUpload";
+import ReportMap from "../components/ReportMap";
+
+function getInstitutionByCategory(category) {
+  switch (category) {
+    case "Јавно осветлување":
+      return "ЕВН Македонија";
+
+    case "Оштетен пат / Дупки":
+      return "ЈП Улици и Патишта";
+
+    case "Отпад и хигиена":
+      return "Комунална хигиена";
+
+    case "Водовод и канализација":
+      return "ЈП Водовод и Канализација";
+
+    case "Паркови и зеленило":
+      return "Паркови и зеленило";
+
+    default:
+      return "Општина Центар";
+  }
+}
+
+function ReportForm() {
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleSubmit = () => {
-    if (!address.trim() || !description.trim()) {
-      setError("Пополни ги сите полиња.");
+  const navigate = useNavigate();
+
+  function handleSubmit() {
+    if (!selectedCategory || !description.trim()) {
+      alert("Ве молиме изберете категорија и внесете опис.");
       return;
     }
-    setError("");
-    const now = new Date();
-    const dateStr = now.toLocaleDateString("mk-MK", { day: "numeric", month: "long", year: "numeric" });
-    const timeStr = now.toLocaleTimeString("mk-MK", { hour: "2-digit", minute: "2-digit" });
-    const newCase = {
-      id: Math.floor(Math.random() * 1000) + 3500,
-      category, status: "pending", address, date: dateStr,
-      reportedById: 1,
-      description, supports: [], comments: [],
-      history: [{ date: dateStr, time: timeStr, text: "Пријавата е поднесена." }],
-    };
-    addCase(newCase);
-    setSuccess(true);
-  };
 
-  const handleReset = () => {
-    setCategory(CATEGORIES[0]);
-    setAddress("");
+    const savedCases = JSON.parse(localStorage.getItem("cases")) || [];
+
+    const nextIdNumber = String(savedCases.length + 1).padStart(3, "0");
+    const currentYear = new Date().getFullYear();
+
+    const newCase = {
+      id: `${currentYear}-${nextIdNumber}`,
+
+      title:
+        description.length > 55
+          ? description.slice(0, 55) + "..."
+          : description,
+
+      category: selectedCategory,
+
+      date: new Date().toISOString().split("T")[0],
+
+      municipality: "Центар",
+
+      institution: getInstitutionByCategory(selectedCategory),
+
+      status: "Пријавено",
+
+      imageName: selectedFile ? selectedFile.name : "",
+    };
+
+    const updatedCases = [...savedCases, newCase];
+
+    localStorage.setItem("cases", JSON.stringify(updatedCases));
+
+    alert("Пријавата е успешно испратена.");
+
+    setSelectedCategory("");
     setDescription("");
-    setError("");
-    setSuccess(false);
-  };
+    setSelectedFile(null);
+
+    navigate("/problems");
+  }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f9ff]">
-      <MainNavbar />
-      <main className="flex-1 max-w-2xl mx-auto w-full px-6 py-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Пријави нов проблем</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Пополни ги деталите за пријавата</p>
-        </div>
+    <div className="min-h-screen bg-white">
+      <ReportNavbar />
 
-        <div className="bg-white rounded-2xl border border-blue-100 shadow-sm p-6 flex flex-col gap-6">
-          {error && <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl">{error}</div>}
-          {success && (
-            <div className="flex flex-col gap-3">
-              <div className="px-4 py-3 bg-green-50 border border-green-200 text-green-600 text-sm rounded-xl">✓ Пријавата е успешно поднесена!</div>
-              <button onClick={handleReset}
-                className="w-full py-2.5 rounded-xl bg-[#0a96f4] hover:bg-[#0082e0] text-white text-sm font-semibold transition">
-                Поднеси нова пријава
-              </button>
-            </div>
-          )}
+      <main className="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr]">
+        <section className="px-12 py-12 max-w-3xl mx-auto w-full">
+          <h1 className="!text-4xl !font-bold !text-gray-900">
+            Пријави нов проблем
+          </h1>
 
-          {!success && (
-            <>
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 block">Категорија</label>
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button key={cat} onClick={() => setCategory(cat)}
-                      className={`px-4 py-2 rounded-xl text-sm font-medium transition border ${category === cat ? "bg-[#0a96f4] text-white border-[#0a96f4]" : "bg-white text-gray-600 border-gray-200 hover:border-[#0a96f4]"}`}>
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <p className="!text-gray-600 !mt-4 !text-lg !leading-relaxed">
+            Вашата пријава директно помага за подобра и пофункционална
+            заедница. Ве молиме пополнете ги задолжителните полиња.
+          </p>
 
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 block">Адреса / Локација</label>
-                <input value={address} onChange={(e) => setAddress(e.target.value)}
-                  placeholder="ул. Пример бр. 1, Скопје"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0a96f4] focus:ring-2 focus:ring-blue-100 transition" />
-              </div>
+          <ReportCategorySelector
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
 
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 block">Опис на проблемот</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Опиши го проблемот детално..." rows={5}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#0a96f4] focus:ring-2 focus:ring-blue-100 transition resize-none" />
-              </div>
+          <ReportDetails
+            description={description}
+            setDescription={setDescription}
+          />
 
-              <button onClick={handleSubmit}
-                className="w-full py-2.5 rounded-xl bg-[#0a96f4] hover:bg-[#0082e0] text-white text-sm font-semibold transition">
-                Поднеси пријава
-              </button>
-            </>
-          )}
-        </div>
+          <ReportUpload
+            selectedFile={selectedFile}
+            setSelectedFile={setSelectedFile}
+          />
+
+          <div className="!mt-12 !border !rounded-2xl !px-6 !py-5 !font-semibold !text-gray-700">
+            ⓘ Со кликнување на „Испрати пријава“, потврдувате дека наведените
+            податоци се точни и локацијата на мапата е правилно означена.
+          </div>
+
+          <button
+            onClick={handleSubmit}
+            className="!mt-8 !w-full !bg-orange-500 !text-white !font-bold !text-xl !py-5 !rounded-2xl shadow-lg hover:!bg-orange-600 !transition"
+          >
+            Испрати пријава
+          </button>
+        </section>
+
+        <ReportMap />
       </main>
-      <MainFooter />
     </div>
   );
-};
+}
 
 export default ReportForm;

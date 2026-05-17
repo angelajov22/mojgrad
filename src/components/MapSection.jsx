@@ -250,13 +250,6 @@ export default function MapSection() {
                     >
                       Погледни на мапа
                     </button>
-
-                    <button
-                      onClick={() => navigate(`/case/${report.id}`)}
-                      className="rounded-lg border border-gray-200 px-3 py-1.5 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-100"
-                    >
-                      Детали
-                    </button>
                   </div>
                 </div>
               </Popup>

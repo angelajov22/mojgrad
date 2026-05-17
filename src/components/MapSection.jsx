@@ -38,11 +38,9 @@ function ChangeMapView({ center }) {
 
 export default function MapSection() {
   const [userPosition, setUserPosition] = useState(null);
-
   const [locationStatus, setLocationStatus] = useState(
     navigator.geolocation ? "loading" : "denied",
   );
-
   const [address, setAddress] = useState("");
   const [reports, setReports] = useState([]);
 
@@ -52,16 +50,12 @@ export default function MapSection() {
     switch (status) {
       case "OPEN":
         return "Пријавено";
-
       case "ASSIGNED":
         return "Доделено";
-
       case "IN_PROGRESS":
         return "Во тек";
-
       case "RESOLVED":
         return "Решено";
-
       default:
         return status;
     }
@@ -71,16 +65,12 @@ export default function MapSection() {
     switch (status) {
       case "OPEN":
         return "bg-blue-100 text-[#0a96f4] border border-blue-200";
-
       case "ASSIGNED":
         return "bg-indigo-100 text-indigo-700 border border-indigo-200";
-
       case "IN_PROGRESS":
         return "bg-yellow-100 text-yellow-700 border border-yellow-200";
-
       case "RESOLVED":
         return "bg-green-100 text-green-700 border border-green-200";
-
       default:
         return "bg-gray-100 text-gray-700 border border-gray-200";
     }
@@ -90,28 +80,20 @@ export default function MapSection() {
     switch (category) {
       case "WATER":
         return "Водовод и канализација";
-
       case "FIRE":
         return "Пожар";
-
       case "ROAD":
         return "Оштетен пат / дупки";
-
       case "TRAFFIC":
         return "Сообраќај";
-
       case "WASTE":
         return "Отпад и хигиена";
-
       case "ELECTRICITY":
         return "Електрика / Осветлување";
-
       case "PUBLIC_SAFETY":
         return "Јавна безбедност";
-
       case "OTHER":
         return "Останато";
-
       default:
         return category;
     }
@@ -130,9 +112,11 @@ export default function MapSection() {
 
         const data = await res.json();
 
-        console.log("REPORTS:", data);
+        const reportsArray = Array.isArray(data)
+          ? data
+          : data.content || data.data || [];
 
-        const reportsWithLocation = data.filter(
+        const reportsWithLocation = reportsArray.filter(
           (report) =>
             report.latitude !== null &&
             report.longitude !== null &&
@@ -192,12 +176,12 @@ export default function MapSection() {
   }, []);
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border overflow-hidden w-full max-w-[620px]">
-      <div className="h-[420px] w-full">
+    <div className="w-full max-w-full overflow-hidden rounded-2xl border bg-white shadow-xl lg:max-w-[540px] lg:ml-0">
+      <div className="h-[240px] w-full sm:h-[380px] lg:h-[420px]">
         <MapContainer
           center={userPosition || [41.9981, 21.4254]}
           zoom={14}
-          className="h-full w-full"
+          className="z-0 h-full w-full"
           zoomControl={false}
         >
           {userPosition && <ChangeMapView center={userPosition} />}
@@ -223,7 +207,7 @@ export default function MapSection() {
             >
               <Popup className="custom-popup" closeButton={false}>
                 <div className="min-w-[220px]">
-                  <p className="font-semibold text-sm m-0">
+                  <p className="m-0 text-sm font-semibold">
                     Пријава #{report.id}
                   </p>
 
@@ -234,7 +218,9 @@ export default function MapSection() {
                       </span>
 
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${getStatusStyles(report.status)}`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${getStatusStyles(
+                          report.status,
+                        )}`}
                       >
                         {getStatusLabel(report.status)}
                       </span>
@@ -260,14 +246,14 @@ export default function MapSection() {
                           `/map?lat=${report.latitude}&lng=${report.longitude}&reportId=${report.id}`,
                         )
                       }
-                      className="rounded-lg bg-[#0a96f4] px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-blue-600 transition"
+                      className="rounded-lg bg-[#0a96f4] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-blue-600"
                     >
                       Погледни на мапа
                     </button>
 
                     <button
                       onClick={() => navigate(`/case/${report.id}`)}
-                      className="rounded-lg border border-gray-200 px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-100 transition"
+                      className="rounded-lg border border-gray-200 px-3 py-1.5 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-100"
                     >
                       Детали
                     </button>
@@ -279,20 +265,18 @@ export default function MapSection() {
         </MapContainer>
       </div>
 
-      <div className="flex items-center justify-between px-4 py-3 border-t">
+      <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-blue-600" />
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-100">
+            <MapPin className="h-4 w-4 text-blue-600" />
           </div>
 
-          <div className="flex flex-col gap-0">
-            <p className="!text-xs !font-semibold !m-0">Тековна локација</p>
+          <div className="flex min-w-0 flex-col gap-0">
+            <p className="!m-0 !text-xs !font-semibold">Тековна локација</p>
 
-            <p className="!text-xs !text-gray-500 !m-0">
+            <p className="truncate !m-0 !text-xs !text-gray-500 sm:max-w-[320px]">
               {locationStatus === "loading" && "Се вчитува..."}
-
               {locationStatus === "denied" && "Нема дозволена локација"}
-
               {locationStatus === "granted" &&
                 (address
                   ? address.split(",").slice(0, 2).join(", ")
@@ -303,9 +287,9 @@ export default function MapSection() {
 
         <button
           onClick={() => navigate("/map")}
-          className="hover:bg-gray-100 flex items-center gap-1 border px-3 py-1 rounded text-xs transition"
+          className="flex items-center justify-center gap-1 rounded border px-3 py-2 text-xs transition hover:bg-gray-100 sm:w-auto"
         >
-          <Maximize2 className="w-3 h-3" />
+          <Maximize2 className="h-3 w-3" />
           Види мапа
         </button>
       </div>

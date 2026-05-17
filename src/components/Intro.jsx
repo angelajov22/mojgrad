@@ -3,9 +3,11 @@ import MapSection from "./MapSection";
 
 const IntroSection = () => {
   return (
-    <section className="flex flex-col lg:flex-row items-center justify-between px-6 sm:px-10 lg:px-50 py-8 lg:py-16 gap-8 bg-slate-50">
-      <IntroductionSection />
-      <MapSection />
+    <section className="bg-slate-50 px-4 py-10 sm:px-6 sm:py-12 lg:px-20 lg:py-16">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-6">
+        <IntroductionSection />
+        <MapSection />
+      </div>
     </section>
   );
 };

@@ -237,13 +237,13 @@ const InstitutionsPage = () => {
 
           <Link
             to="/admin/institutions/add"
-            className="no-underline flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:-translate-y-0.5"
+            className="!no-underline flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:-translate-y-0.5"
             style={{
               backgroundColor: "#0a96f4",
               boxShadow: "0 4px 12px rgba(10, 150, 244, 0.25)",
             }}
           >
-            + Додај нова институција
+            + Додади нова институција
           </Link>
         </div>
 
